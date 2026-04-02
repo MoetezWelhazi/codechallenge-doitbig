@@ -8,6 +8,8 @@ Non-technical users struggle with concepts like `{{input.value}}` but have a str
 An example of a low-code version is [retool](https://retool.com/) which uses `{{}}` that works great for technical users but becomes difficult for non-technical users.
 &#x20;Your goal is to design a **simpler, more intuitive way** to work with dynamic data in a UI.
 
+If you're not familiar with low-code tools you can signup for retool and try to drag and drop an input and a text component to bind the input value to the text
+
 ## **Challenge**
 
 Create a small prototype that allows a non-technical user to:
@@ -58,13 +60,17 @@ You can change this if needed, but keep it simple.
 
 - Clear mental model 
 
-Delivery
+**Delivery**
+
 When you are finished, send an invite to your github, bitbucket or gitlab repository to: ismail-doitbig
 
 Include a loom with your thought process.
-You will be judged on:
-7 points: Thought process and coming up with a solution
-3 points: The ease of use for the solution
+
+**You will be judged on:**
+
+- 7 points: Thought process and coming up with a solution
+- 3 points: The ease of use for the solution
+
 Max reachable score 10/10 points
 Besides the above points your app will be compared against other developer submissions.
 
