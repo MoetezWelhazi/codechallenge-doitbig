@@ -21,9 +21,9 @@ Create a small prototype that allows a non-technical user to:
 2. Perform at least **2 additional actions**, such as:
    - Conditional logic (e.g. show/hide based on input)
 
-   - Combining values (e.g. full name)
+   - Combining values (e.g. list of names sperated by comma)
 
-   - Transformations (e.g. date to age, formatting list)
+   - Transformations (e.g. date to age)
 
 ⚠️ Constraint:
 
