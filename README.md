@@ -23,7 +23,7 @@ Create a small prototype that allows a non-technical user to:
 
    - Combining values (e.g. full name)
 
-   - Transformations (e.g. uppercase, formatting)
+   - Transformations (e.g. date to age, formatting list)
 
 ⚠️ Constraint:
 
