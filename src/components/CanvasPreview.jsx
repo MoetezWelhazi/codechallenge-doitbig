@@ -1,10 +1,12 @@
 export default function CanvasPreview({
   answers,
+  fields,
   isMessageVisible,
   message,
   onAnswerChange,
-  visitorSummary,
 }) {
+  const editableFields = fields.filter((field) => field.type !== "derived");
+
   return (
     <main className="preview-panel" aria-labelledby="preview-title">
       <div className="panel-heading">
@@ -13,26 +15,18 @@ export default function CanvasPreview({
       </div>
 
       <section className="preview-card" aria-label="Preview app">
-        <label className="field">
-          Name
-          <input
-            type="text"
-            value={answers.name}
-            onChange={(event) => onAnswerChange("name", event.target.value)}
-            placeholder="Enter name"
-          />
-        </label>
-
-        <label className="field">
-          Age
-          <input
-            type="number"
-            value={answers.age}
-            onChange={(event) => onAnswerChange("age", event.target.value)}
-            placeholder="Enter age"
-            min="0"
-          />
-        </label>
+        {editableFields.map((field) => (
+          <label className="field" key={field.id}>
+            {field.label}
+            <input
+              type={field.type}
+              value={answers[field.id]}
+              onChange={(event) => onAnswerChange(field.id, event.target.value)}
+              placeholder={`Enter ${field.label.toLowerCase()}`}
+              min={field.type === "number" ? "0" : undefined}
+            />
+          </label>
+        ))}
 
         <div className="message-card">
           <p className="message-label">Text element</p>
@@ -41,11 +35,6 @@ export default function CanvasPreview({
           ) : (
             <p className="hidden-message">This text is hidden right now.</p>
           )}
-        </div>
-
-        <div className="summary-card">
-          <p className="message-label">Combined answer</p>
-          <p>{visitorSummary}</p>
         </div>
       </section>
     </main>

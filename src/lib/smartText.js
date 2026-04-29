@@ -40,13 +40,8 @@ export function evaluateVisibilityRule(rule, values) {
   }
 }
 
-export function buildVisitorSummary(values) {
-  const name = hasValue(values.name) ? String(values.name).trim() : "This visitor";
-  const isAdult = toNumber(values.age) >= 18;
-  const article = isAdult ? "an" : "a";
-  const ageLabel = isAdult ? "adult visitor" : "younger visitor";
-
-  return `${name} is ${article} ${ageLabel}.`;
+export function getAgeGroup(age) {
+  return toNumber(age) >= 18 ? "adult visitor" : "younger visitor";
 }
 
 function hasValue(value) {

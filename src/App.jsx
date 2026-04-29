@@ -3,20 +3,37 @@ import { useState } from "react";
 import CanvasPreview from "./components/CanvasPreview";
 import InspectorPanel from "./components/InspectorPanel";
 import {
-  buildVisitorSummary,
   evaluateVisibilityRule,
+  getAgeGroup,
   renderSmartText,
 } from "./lib/smartText";
 
+const initialFields = [
+  { id: "name", label: "Name", type: "text" },
+  { id: "age", label: "Age", type: "number" },
+  {
+    id: "ageGroup",
+    label: "Age group",
+    type: "derived",
+    description: "Adult or younger, based on Age",
+  },
+];
+
 const initialSegments = [
-  { type: "text", value: "Hello, " },
-  { type: "field", field: "name", label: "Name" },
-  { type: "text", value: ". You are " },
-  { type: "field", field: "age", label: "Age" },
-  { type: "text", value: " years old." },
+  { id: "segment-1", type: "text", value: "Hello, " },
+  { id: "segment-2", type: "field", field: "name" },
+  { id: "segment-3", type: "text", value: ". You are " },
+  { id: "segment-4", type: "field", field: "age" },
+  { id: "segment-5", type: "text", value: " years old. Visitor type: " },
+  { id: "segment-6", type: "field", field: "ageGroup" },
+  { id: "segment-7", type: "text", value: "." },
 ];
 
 export default function App() {
+  const [fields, setFields] = useState(initialFields);
+  const [segments, setSegments] = useState(initialSegments);
+  const [nextSegmentNumber, setNextSegmentNumber] = useState(8);
+  const [composerVersion, setComposerVersion] = useState(0);
   const [answers, setAnswers] = useState({ name: "Maya", age: "28" });
   const [visibilityRule, setVisibilityRule] = useState({
     enabled: true,
@@ -24,9 +41,35 @@ export default function App() {
     operator: "gte",
     value: 18,
   });
-  const message = renderSmartText(initialSegments, answers);
-  const isMessageVisible = evaluateVisibilityRule(visibilityRule, answers);
-  const visitorSummary = buildVisitorSummary(answers);
+
+  const smartValues = {
+    ...answers,
+    ageGroup: getAgeGroup(answers.age),
+  };
+  const message = renderSmartText(segments, smartValues);
+  const isMessageVisible = evaluateVisibilityRule(visibilityRule, smartValues);
+
+  function bumpComposerVersion() {
+    setComposerVersion((current) => current + 1);
+  }
+
+  function addFieldSegment(fieldId) {
+    setSegments((currentSegments) => [
+      ...currentSegments,
+      { id: `segment-${nextSegmentNumber}`, type: "field", field: fieldId },
+    ]);
+    setNextSegmentNumber((current) => current + 1);
+    bumpComposerVersion();
+  }
+
+  function updateFieldLabel(fieldId, label) {
+    setFields((currentFields) =>
+      currentFields.map((field) =>
+        field.id === fieldId ? { ...field, label } : field,
+      ),
+    );
+    bumpComposerVersion();
+  }
 
   function updateAnswer(field, value) {
     setAnswers((currentAnswers) => ({
@@ -45,14 +88,19 @@ export default function App() {
       <div className="workspace" aria-label="Prototype workspace">
         <CanvasPreview
           answers={answers}
+          fields={fields}
           isMessageVisible={isMessageVisible}
           message={message}
           onAnswerChange={updateAnswer}
-          visitorSummary={visitorSummary}
         />
         <InspectorPanel
-          segments={initialSegments}
+          fields={fields}
+          segments={segments}
+          composerVersion={composerVersion}
           visibilityRule={visibilityRule}
+          onAddFieldSegment={addFieldSegment}
+          onFieldLabelChange={updateFieldLabel}
+          onSegmentsChange={setSegments}
           onVisibilityRuleChange={setVisibilityRule}
         />
       </div>

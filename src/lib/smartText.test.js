@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  buildVisitorSummary,
   evaluateVisibilityRule,
+  getAgeGroup,
   renderSmartText,
 } from "./smartText";
 
@@ -60,19 +60,9 @@ describe("evaluateVisibilityRule", () => {
   });
 });
 
-describe("buildVisitorSummary", () => {
-  it("combines the name with an age-based label", () => {
-    expect(buildVisitorSummary({ name: "Maya", age: "28" })).toBe(
-      "Maya is an adult visitor.",
-    );
-    expect(buildVisitorSummary({ name: "Leo", age: "16" })).toBe(
-      "Leo is a younger visitor.",
-    );
-  });
-
-  it("uses friendly fallback text when the name is empty", () => {
-    expect(buildVisitorSummary({ name: "", age: "20" })).toBe(
-      "This visitor is an adult visitor.",
-    );
+describe("getAgeGroup", () => {
+  it("turns age into a friendly label", () => {
+    expect(getAgeGroup("28")).toBe("adult visitor");
+    expect(getAgeGroup("16")).toBe("younger visitor");
   });
 });
