@@ -23,31 +23,70 @@ npm run build
 
 ### Approach
 
-The product idea is "smart text without code." A text element can include normal words plus friendly chips like `Name` and `Age`. Those chips represent answers from the form, but the user never sees templating syntax or code-like bindings in the UI.
+The product idea is "smart text without code." A text element is a single inline editor where the user types regular words and drops in labeled answer chips like `Name`, `Age`, or `Age group`. The chips represent answers from the form, but the user never sees templating syntax or code-like bindings.
 
-The prototype demonstrates:
+The prototype demonstrates the three behaviors from the challenge:
 
-- Dynamic display: changing the `Name` or `Age` fields updates the text element immediately.
-- Conditional logic: a plain-language `Show when` control hides the text when the visitor's age is below the selected minimum.
-- Combining and transformation: the preview creates a friendly visitor summary by combining the name with an age-based label.
+- **Dynamic display:** changing the `Name` or `Age` answer updates the text element immediately.
+- **Conditional display:** a plain-language rule hides the text when the answer doesn't match. The rule reads as a sentence, e.g. `Show this text when Age is at least 18`.
+- **Transformation and combining:** a derived `Age group` chip turns `Age` into `adult visitor` or `younger visitor`, and combines naturally with the rest of the sentence.
+
+The editor itself is the main piece of design work:
+
+- One inline editable line. You can type, delete, and wrap text anywhere; chips behave as atomic objects in the flow.
+- Drag-and-drop chips. Dragging a chip from the shelf, or an existing chip from the line, shows a soft ghost preview at the caret position so the surrounding text reflows around its future home.
+- Hover-only `×` on each chip to remove it, with no extra controls cluttering the resting state of the chip.
+- Type-aware comparison operators in the condition builder: `Age` (number) shows `is at least` and `is at most`; `Name` (text) shows `includes`. Switching the answer keeps the operator if it still makes sense, and falls back to a safe default if not.
+
+#### Walkthrough (Loom)
+
+[**Open the 5-minute Loom walkthrough →**](https://www.loom.com/share/46821141d00a4f02a8d349e83aa8e7eb)
+
+<p align="center">
+  <iframe
+    width="640"
+    height="360"
+    src="https://www.loom.com/embed/46821141d00a4f02a8d349e83aa8e7eb"
+    title="Prototype walkthrough"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen
+  ></iframe>
+</p>
+
 
 ### How a non-technical user would use it
 
-1. Fill in the sample visitor fields on the preview side.
-2. Look at the text settings panel to understand which answers are used in the smart text.
-3. Adjust the `Show when` setting using normal language: `Age is at least 18`.
-4. Watch the preview update without writing or reading code.
+1. Fill in the sample answers on the left to see the smart text update live.
+2. In the editor on the right, type the sentence you want.
+3. Drag answer chips like `Name`, `Age`, or `Age group` from the shelf into the sentence wherever a value should appear.
+4. Drag a chip to a new position to reorder it, or hover it and click `×` to remove it.
+5. Open `When should this text appear?` and describe the rule in plain language, for example: `Show this text when Age is at least 18`.
 
 ### Why this is better than traditional bindings
 
-Traditional low-code bindings expose implementation details. They are powerful, but they ask users to understand references, punctuation, and expression syntax before they can make a small dynamic change.
+Traditional low-code bindings expose implementation details. They're powerful, but they ask users to understand references, punctuation, and expression syntax before they can make a small dynamic change. They also let users build rules that don't apply to the data, like `name greater than 5`.
 
-This prototype keeps the same useful behavior but changes the interaction model:
+This prototype keeps the same underlying structure but changes the surface:
 
-- Dynamic values are visible as labeled chips.
-- Logic is expressed as a sentence.
-- Feedback is immediate in the preview.
-- The implementation stays small: plain React state, serializable segment data, and pure helper functions.
+- Dynamic values are visible as labeled chips, not opaque expressions.
+- Conditional logic is expressed as a sentence, not a formula.
+- The condition builder constrains itself to the operators that make sense for the chosen answer.
+- Feedback is immediate. Every edit is reflected in the preview within the same frame.
+
+Underneath, the data stays clean: smart text is a serializable list of segments, the visibility rule is a small structured object, and the rendering and rule evaluation are pure functions. That keeps the prototype small, testable, and easy to extend in the directions a real product would care about.
+
+### What I deliberately left out
+
+To keep the prototype focused on the mental model rather than feature breadth:
+
+- One text element, not a full canvas of components.
+- One condition row, not nested AND/OR groups.
+- One derived value (`Age group`) to demonstrate transformation, instead of a formula editor.
+- A fixed two-answer schema. Users can rename the form labels but not add new fields.
+
+These are the natural next steps if the model proves itself, but the challenge rewards a clear first interaction over feature depth.
+
 
 
 ## Original challenge brief
