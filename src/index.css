@@ -132,6 +132,15 @@ select {
   letter-spacing: -0.04em;
 }
 
+.hidden-message {
+  margin: 10px 0 0;
+  border-radius: 16px;
+  background: #f3eadc;
+  color: #6d6258;
+  padding: 14px;
+  font-weight: 700;
+}
+
 .helper-card {
   display: grid;
   gap: 8px;
@@ -161,4 +170,47 @@ select {
   padding: 5px 10px;
   font-size: 0.88rem;
   font-weight: 800;
+}
+
+.rule-card {
+  display: grid;
+  gap: 14px;
+  border: 1px solid #eadac5;
+  border-radius: 22px;
+  margin: 0;
+  padding: 18px;
+}
+
+.rule-card legend {
+  padding: 0 6px;
+  color: #5b5044;
+  font-weight: 800;
+}
+
+.toggle-row,
+.rule-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toggle-row {
+  color: #3d342b;
+  font-weight: 700;
+}
+
+.rule-row {
+  flex-wrap: wrap;
+  border-radius: 16px;
+  background: #fffdf8;
+  padding: 12px;
+  color: #5b5044;
+  font-weight: 700;
+}
+
+.rule-row input {
+  width: 86px;
+  border: 1px solid #d8c8b5;
+  border-radius: 12px;
+  padding: 8px 10px;
 }

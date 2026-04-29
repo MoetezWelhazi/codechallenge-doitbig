@@ -1,4 +1,15 @@
-export default function InspectorPanel({ segments }) {
+export default function InspectorPanel({
+  segments,
+  visibilityRule,
+  onVisibilityRuleChange,
+}) {
+  function updateVisibilityRule(nextFields) {
+    onVisibilityRuleChange({
+      ...visibilityRule,
+      ...nextFields,
+    });
+  }
+
   return (
     <aside className="inspector-panel" aria-labelledby="inspector-title">
       <div className="panel-heading">
@@ -28,6 +39,37 @@ export default function InspectorPanel({ segments }) {
           without asking users to write code.
         </p>
       </div>
+
+      <fieldset className="rule-card">
+        <legend>Show when</legend>
+
+        <label className="toggle-row">
+          <input
+            type="checkbox"
+            checked={visibilityRule.enabled}
+            onChange={(event) =>
+              updateVisibilityRule({ enabled: event.target.checked })
+            }
+          />
+          Only show this text for some visitors
+        </label>
+
+        {visibilityRule.enabled ? (
+          <div className="rule-row" aria-label="Show when rule">
+            <span>Age</span>
+            <span>is at least</span>
+            <input
+              aria-label="Minimum age"
+              type="number"
+              min="0"
+              value={visibilityRule.value}
+              onChange={(event) =>
+                updateVisibilityRule({ value: event.target.value })
+              }
+            />
+          </div>
+        ) : null}
+      </fieldset>
     </aside>
   );
 }

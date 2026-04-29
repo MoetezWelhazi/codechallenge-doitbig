@@ -1,4 +1,9 @@
-export default function CanvasPreview({ answers, message, onAnswerChange }) {
+export default function CanvasPreview({
+  answers,
+  isMessageVisible,
+  message,
+  onAnswerChange,
+}) {
   return (
     <main className="preview-panel" aria-labelledby="preview-title">
       <div className="panel-heading">
@@ -30,7 +35,11 @@ export default function CanvasPreview({ answers, message, onAnswerChange }) {
 
         <div className="message-card">
           <p className="message-label">Text element</p>
-          <p className="message-preview">{message}</p>
+          {isMessageVisible ? (
+            <p className="message-preview">{message}</p>
+          ) : (
+            <p className="hidden-message">This text is hidden right now.</p>
+          )}
         </div>
       </section>
     </main>

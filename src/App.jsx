@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import CanvasPreview from "./components/CanvasPreview";
 import InspectorPanel from "./components/InspectorPanel";
-import { renderSmartText } from "./lib/smartText";
+import { evaluateVisibilityRule, renderSmartText } from "./lib/smartText";
 
 const initialSegments = [
   { type: "text", value: "Hello, " },
@@ -14,7 +14,14 @@ const initialSegments = [
 
 export default function App() {
   const [answers, setAnswers] = useState({ name: "Maya", age: "28" });
+  const [visibilityRule, setVisibilityRule] = useState({
+    enabled: true,
+    field: "age",
+    operator: "gte",
+    value: 18,
+  });
   const message = renderSmartText(initialSegments, answers);
+  const isMessageVisible = evaluateVisibilityRule(visibilityRule, answers);
 
   function updateAnswer(field, value) {
     setAnswers((currentAnswers) => ({
@@ -33,10 +40,15 @@ export default function App() {
       <div className="workspace" aria-label="Prototype workspace">
         <CanvasPreview
           answers={answers}
+          isMessageVisible={isMessageVisible}
           message={message}
           onAnswerChange={updateAnswer}
         />
-        <InspectorPanel segments={initialSegments} />
+        <InspectorPanel
+          segments={initialSegments}
+          visibilityRule={visibilityRule}
+          onVisibilityRuleChange={setVisibilityRule}
+        />
       </div>
     </div>
   );

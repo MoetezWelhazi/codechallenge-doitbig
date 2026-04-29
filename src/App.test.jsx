@@ -32,4 +32,25 @@ describe('App', () => {
 
     expect(screen.getByText(/hello, nora\. you are 34 years old\./i)).toBeInTheDocument();
   });
+
+  it('hides the text when the age answer does not meet the show-when control', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.clear(screen.getByRole('spinbutton', { name: /^age$/i }));
+    await user.type(screen.getByRole('spinbutton', { name: /^age$/i }), '16');
+
+    expect(screen.queryByText(/hello, maya\. you are 16 years old\./i)).not.toBeInTheDocument();
+    expect(screen.getByText(/this text is hidden right now/i)).toBeInTheDocument();
+  });
+
+  it('updates visibility when the minimum age changes', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.clear(screen.getByLabelText(/minimum age/i));
+    await user.type(screen.getByLabelText(/minimum age/i), '30');
+
+    expect(screen.getByText(/this text is hidden right now/i)).toBeInTheDocument();
+  });
 });
