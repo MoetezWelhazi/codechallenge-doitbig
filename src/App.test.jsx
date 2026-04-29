@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 
@@ -71,13 +71,36 @@ describe('App', () => {
 
     expect(
       screen.getByRole('checkbox', {
-        name: /only show this text for some visitors/i,
+        name: /only show when an answer matches a condition/i,
       }),
     ).toBeChecked();
+    expect(screen.getByText(/show this text when/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/answer to check/i)).toHaveValue('age');
     expect(screen.getByLabelText(/how to compare/i)).toHaveValue('gte');
     expect(screen.getByLabelText(/comparison answer/i)).toHaveValue(18);
     expect(document.body).not.toHaveTextContent(/{{|}}/);
+  });
+
+  it('shows comparison options that match the selected answer type', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    const answerSelect = screen.getByLabelText(/answer to check/i);
+    const comparisonSelect = screen.getByLabelText(/how to compare/i);
+
+    expect(within(comparisonSelect).getByText(/is at least/i)).toBeInTheDocument();
+    expect(within(comparisonSelect).getByText(/is at most/i)).toBeInTheDocument();
+
+    await user.selectOptions(answerSelect, 'name');
+
+    expect(comparisonSelect).toHaveValue('notEmpty');
+    expect(within(comparisonSelect).getByText(/includes/i)).toBeInTheDocument();
+    expect(
+      within(comparisonSelect).queryByText(/is at least/i),
+    ).not.toBeInTheDocument();
+    expect(
+      within(comparisonSelect).queryByText(/is at most/i),
+    ).not.toBeInTheDocument();
   });
 
   it('inserts another chip into the smart text when a shelf chip is clicked', async () => {

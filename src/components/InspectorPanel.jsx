@@ -1,6 +1,19 @@
 import SmartTextComposer from "./SmartTextComposer";
 import { beginShelfDrag } from "./smartTextDrag";
 
+const sharedComparisonOptions = [{ value: "notEmpty", label: "is not empty" }];
+const textComparisonOptions = [
+  ...sharedComparisonOptions,
+  { value: "equals", label: "is exactly" },
+  { value: "contains", label: "includes" },
+];
+const numberComparisonOptions = [
+  ...sharedComparisonOptions,
+  { value: "equals", label: "is exactly" },
+  { value: "gte", label: "is at least" },
+  { value: "lte", label: "is at most" },
+];
+
 export default function InspectorPanel({
   fields,
   segments,
@@ -12,6 +25,10 @@ export default function InspectorPanel({
   onVisibilityRuleChange,
 }) {
   const editableFields = fields.filter((field) => field.type !== "derived");
+  const selectedField = editableFields.find(
+    (field) => field.id === visibilityRule.field,
+  );
+  const comparisonOptions = getComparisonOptions(selectedField);
 
   function updateVisibilityRule(nextFields) {
     onVisibilityRuleChange({
@@ -74,7 +91,7 @@ export default function InspectorPanel({
       </fieldset>
 
       <fieldset className="rule-card">
-        <legend>When should this text show?</legend>
+        <legend>When should this text appear?</legend>
 
         <label className="toggle-row">
           <input
@@ -84,17 +101,25 @@ export default function InspectorPanel({
               updateVisibilityRule({ enabled: event.target.checked })
             }
           />
-          Only show this text for some visitors
+          Only show when an answer matches a condition
         </label>
 
         {visibilityRule.enabled ? (
           <div className="rule-row" aria-label="Show when rule">
-            <span>Show when</span>
+            <span>Show this text when</span>
             <select
               aria-label="Answer to check"
               value={visibilityRule.field}
               onChange={(event) =>
-                updateVisibilityRule({ field: event.target.value })
+                updateVisibilityRule({
+                  field: event.target.value,
+                  operator: getNextOperator(
+                    editableFields.find(
+                      (field) => field.id === event.target.value,
+                    ),
+                    visibilityRule.operator,
+                  ).value,
+                })
               }
             >
               {editableFields.map((field) => (
@@ -110,11 +135,11 @@ export default function InspectorPanel({
                 updateVisibilityRule({ operator: event.target.value })
               }
             >
-              <option value="notEmpty">has an answer</option>
-              <option value="equals">is exactly</option>
-              <option value="contains">includes</option>
-              <option value="gte">is at least</option>
-              <option value="lte">is at most</option>
+              {comparisonOptions.map((option) => (
+                <option value={option.value} key={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
             {visibilityRule.operator === "notEmpty" ? null : (
               <input
@@ -137,4 +162,14 @@ export default function InspectorPanel({
       </fieldset>
     </aside>
   );
+}
+
+function getComparisonOptions(field) {
+  return field?.type === "number" ? numberComparisonOptions : textComparisonOptions;
+}
+
+function getNextOperator(field, currentOperator) {
+  const options = getComparisonOptions(field);
+  const currentOption = options.find((option) => option.value === currentOperator);
+  return currentOption ?? options[0];
 }
