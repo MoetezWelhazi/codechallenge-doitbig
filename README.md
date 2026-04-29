@@ -42,19 +42,6 @@ The editor itself is the main piece of design work:
 
 [**Open the 5-minute Loom walkthrough →**](https://www.loom.com/share/46821141d00a4f02a8d349e83aa8e7eb)
 
-<p align="center">
-  <iframe
-    width="640"
-    height="360"
-    src="https://www.loom.com/embed/46821141d00a4f02a8d349e83aa8e7eb"
-    title="Prototype walkthrough"
-    frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen
-  ></iframe>
-</p>
-
-
 ### How a non-technical user would use it
 
 1. Fill in the sample answers on the left to see the smart text update live.
