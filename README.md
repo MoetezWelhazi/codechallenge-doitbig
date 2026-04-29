@@ -63,6 +63,14 @@ This prototype keeps the same underlying structure but changes the surface:
 
 Underneath, the data stays clean: smart text is a serializable list of segments, the visibility rule is a small structured object, and the rendering and rule evaluation are pure functions. That keeps the prototype small, testable, and easy to extend in the directions a real product would care about.
 
+### Implementation tradeoff
+
+The segment model is intentionally small: each piece of smart text is either regular text or a field chip reference. That structure is useful because the preview can render `Name` as the current answer while still keeping the editor understandable.
+
+The more complex part is the custom `contentEditable` bridge. The final interaction asks for free-form typing, inline draggable chips, a live ghost preview while dragging, hover-to-remove chips, and guardrails that keep chips from being inserted inside other chips. Those details are what make the editor feel natural, but they also require careful DOM handling to avoid cursor jumps and broken drag behavior.
+
+For a production editor, a purpose-built rich text framework such as Lexical, ProseMirror, or Slate would be worth considering. For this prototype, I kept dependencies small and implemented only the behavior needed to prove the interaction model.
+
 ### What I deliberately left out
 
 To keep the prototype focused on the mental model rather than feature breadth:

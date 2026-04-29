@@ -14,6 +14,14 @@ const numberComparisonOptions = [
   { value: "lte", label: "is at most" },
 ];
 
+/**
+ * Provides the non-technical controls for composing smart text and conditions.
+ *
+ * The panel keeps the UI vocabulary close to how a user would describe the
+ * behavior: write text, drag answer chips, and define when the text should
+ * appear. Comparison options are filtered by answer type so the user cannot
+ * choose a rule that does not make sense for the selected field.
+ */
 export default function InspectorPanel({
   fields,
   segments,
@@ -164,10 +172,19 @@ export default function InspectorPanel({
   );
 }
 
+/**
+ * Returns the comparison phrases that are valid for the selected answer type.
+ * This keeps text answers from offering numeric-only comparisons like
+ * "is at least", while preserving the small rule object used by the evaluator.
+ */
 function getComparisonOptions(field) {
   return field?.type === "number" ? numberComparisonOptions : textComparisonOptions;
 }
 
+/**
+ * Keeps the current operator when switching fields, unless that operator no
+ * longer belongs to the new field type.
+ */
 function getNextOperator(field, currentOperator) {
   const options = getComparisonOptions(field);
   const currentOption = options.find((option) => option.value === currentOperator);

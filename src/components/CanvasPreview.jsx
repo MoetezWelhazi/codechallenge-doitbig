@@ -1,3 +1,11 @@
+/**
+ * Renders the user's app-facing form and the resulting text element.
+ *
+ * This component is deliberately presentation-focused: it receives already
+ * evaluated visibility and rendered message props, while `App` owns the data
+ * model. That split keeps the preview simple and makes the live feedback easy
+ * to test from user interactions.
+ */
 export default function CanvasPreview({
   answers,
   fields,

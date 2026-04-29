@@ -7,6 +7,27 @@ import {
   resetDragState,
 } from "./smartTextDrag";
 
+/**
+ * A smart-text segment is one editable piece of the sentence.
+ *
+ * Text segments store regular words exactly as the user typed them. Field
+ * segments store a reference to an answer chip, such as `name` or `age`, so the
+ * preview can replace that chip with the current answer value.
+ *
+ * @typedef {{ id: string, type: "text", value: string }} TextSegment
+ * @typedef {{ id: string, type: "field", field: string }} FieldSegment
+ * @typedef {TextSegment | FieldSegment} SmartTextSegment
+ */
+
+/**
+ * Inline editor for smart text segments.
+ *
+ * React is intentionally not used to render every text node while the user is
+ * typing. A contentEditable surface gives the "write a sentence" feel, and the
+ * component parses that DOM back into serializable segments after edits. React
+ * only rebuilds the DOM when external controls change the model, which avoids
+ * cursor jumps during normal typing and drag-and-drop.
+ */
 export default function SmartTextComposer({
   fields,
   segments,
@@ -18,6 +39,7 @@ export default function SmartTextComposer({
   const segmentsRef = useRef(segments);
   const onSegmentsChangeRef = useRef(onSegmentsChange);
 
+  // Keep latest props available to DOM event handlers without re-binding them.
   useEffect(() => {
     fieldsRef.current = fields;
   }, [fields]);
@@ -74,6 +96,13 @@ export default function SmartTextComposer({
     return span;
   }
 
+  /**
+   * Places a preview chip at the caret position during drag.
+   *
+   * The preview chip is a real inline element, so the browser naturally wraps
+   * surrounding text around it. We skip no-op moves to avoid layout thrashing
+   * and flicker while dragover fires many times per second.
+   */
   function moveGhostTo(clientX, clientY) {
     const editor = editorRef.current;
     if (!editor) return;
@@ -201,6 +230,11 @@ export default function SmartTextComposer({
   );
 }
 
+/**
+ * Detects whether the drag caret is already on either side of the ghost chip.
+ * Re-inserting the same node at the same location restarts CSS/layout work, so
+ * this check keeps drag previews visually stable.
+ */
 function isRangeAdjacentToNode(range, node) {
   const { startContainer, startOffset } = range;
 
@@ -226,6 +260,13 @@ function isRangeAdjacentToNode(range, node) {
   return false;
 }
 
+/**
+ * Converts pointer coordinates into a collapsed insertion range.
+ *
+ * Browsers can return a caret inside the text node of a contentEditable=false
+ * chip. We snap those ranges to the chip boundary so chips remain atomic and
+ * cannot be inserted inside one another.
+ */
 function getRangeFromPoint(x, y) {
   const range = rawRangeFromPoint(x, y);
   if (!range) return null;
@@ -247,6 +288,10 @@ function rawRangeFromPoint(x, y) {
   return null;
 }
 
+/**
+ * If the browser points inside an existing chip, move the insertion target to
+ * before or after that chip based on the pointer's horizontal midpoint.
+ */
 function snapRangeOutOfChip(range, clientX) {
   let node = range.startContainer;
   while (node) {
@@ -271,6 +316,10 @@ function snapRangeOutOfChip(range, clientX) {
   return range;
 }
 
+/**
+ * Inserts a chip at the pointer location, falling back to the end of the editor
+ * when the pointer lands in padding where no caret range is available.
+ */
 function insertSpanAtPoint(editor, span, clientX, clientY) {
   const range = getRangeFromPoint(clientX, clientY);
   if (range && editor.contains(range.startContainer)) {
@@ -281,6 +330,13 @@ function insertSpanAtPoint(editor, span, clientX, clientY) {
   addSpacingAround(span);
 }
 
+/**
+ * Builds the chip DOM node used inside the contentEditable editor.
+ *
+ * Chips are imperative DOM nodes because React-controlled children inside a
+ * contentEditable surface cause cursor jumps. The remove button dispatches a
+ * small custom event so the composer can re-parse and sync React state.
+ */
 function createChipSpan(fieldId, fields, providedSegmentId) {
   const field = fields.find((item) => item.id === fieldId);
   const label = field?.label ?? fieldId;
@@ -326,6 +382,9 @@ function createChipSpan(fieldId, fields, providedSegmentId) {
   return span;
 }
 
+/**
+ * Adds minimal whitespace when a chip is inserted between words.
+ */
 function addSpacingAround(node) {
   if (
     !node.previousSibling ||
@@ -344,6 +403,11 @@ function addSpacingAround(node) {
   }
 }
 
+/**
+ * Recreates the editable DOM from the `segments` prop.
+ * Each segment is either plain text or a field chip, which keeps the editor's
+ * value easy to store and render outside the contentEditable DOM.
+ */
 function rebuildDom(editor, segments, fields) {
   while (editor.firstChild) {
     editor.removeChild(editor.firstChild);
@@ -358,6 +422,10 @@ function rebuildDom(editor, segments, fields) {
 }
 
 let parseCounter = 0;
+/**
+ * Reads the contentEditable DOM back into the same text/chip segment shape.
+ * Ghost chips are skipped because they are only transient drag previews.
+ */
 function parseDom(editor) {
   const segments = [];
 

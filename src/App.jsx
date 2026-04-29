@@ -29,6 +29,15 @@ const initialSegments = [
   { id: "segment-7", type: "text", value: "." },
 ];
 
+/**
+ * Owns the prototype's serializable state and wires the editor to the preview.
+ *
+ * The app keeps fields, smart-text segments, answers, and the visibility rule in
+ * plain React state so the data model stays easy to inspect, test, and explain.
+ * `composerVersion` is intentionally separate: the contentEditable composer
+ * updates itself while typing, and only needs a forced rebuild when external
+ * controls append chips or rename fields.
+ */
 export default function App() {
   const [fields, setFields] = useState(initialFields);
   const [segments, setSegments] = useState(initialSegments);
