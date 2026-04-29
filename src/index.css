@@ -106,6 +106,7 @@ select {
 }
 
 .message-card,
+.summary-card,
 .helper-card {
   border: 1px solid #eadac5;
   border-radius: 22px;
@@ -114,9 +115,21 @@ select {
 }
 
 .message-label,
+.summary-card p,
 .helper-card h3,
 .helper-card p {
   margin: 0;
+}
+
+.summary-card {
+  display: grid;
+  gap: 8px;
+}
+
+.summary-card p:last-child {
+  color: #3d342b;
+  font-size: 1.1rem;
+  font-weight: 800;
 }
 
 .message-label {

@@ -19,6 +19,7 @@ describe('App', () => {
     expect(screen.getByRole('spinbutton', { name: /^age$/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/smart text recipe/i)).toBeInTheDocument();
     expect(screen.getByText(/hello, maya\. you are 28 years old\./i)).toBeInTheDocument();
+    expect(screen.getByText(/maya is an adult visitor\./i)).toBeInTheDocument();
   });
 
   it('updates the smart text preview when answers change', async () => {
@@ -31,6 +32,7 @@ describe('App', () => {
     await user.type(screen.getByRole('spinbutton', { name: /^age$/i }), '34');
 
     expect(screen.getByText(/hello, nora\. you are 34 years old\./i)).toBeInTheDocument();
+    expect(screen.getByText(/nora is an adult visitor\./i)).toBeInTheDocument();
   });
 
   it('hides the text when the age answer does not meet the show-when control', async () => {
@@ -42,6 +44,7 @@ describe('App', () => {
 
     expect(screen.queryByText(/hello, maya\. you are 16 years old\./i)).not.toBeInTheDocument();
     expect(screen.getByText(/this text is hidden right now/i)).toBeInTheDocument();
+    expect(screen.getByText(/maya is a younger visitor\./i)).toBeInTheDocument();
   });
 
   it('updates visibility when the minimum age changes', async () => {

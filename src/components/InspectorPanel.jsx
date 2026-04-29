@@ -33,10 +33,9 @@ export default function InspectorPanel({
       </div>
 
       <div className="helper-card">
-        <h3>Next up</h3>
+        <h3>Combined answer</h3>
         <p>
-          This editor will use friendly chips for answers like name and age,
-          without asking users to write code.
+          The preview also turns name and age into a friendly visitor summary.
         </p>
       </div>
 

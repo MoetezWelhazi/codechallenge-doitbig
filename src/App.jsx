@@ -2,7 +2,11 @@ import { useState } from "react";
 
 import CanvasPreview from "./components/CanvasPreview";
 import InspectorPanel from "./components/InspectorPanel";
-import { evaluateVisibilityRule, renderSmartText } from "./lib/smartText";
+import {
+  buildVisitorSummary,
+  evaluateVisibilityRule,
+  renderSmartText,
+} from "./lib/smartText";
 
 const initialSegments = [
   { type: "text", value: "Hello, " },
@@ -22,6 +26,7 @@ export default function App() {
   });
   const message = renderSmartText(initialSegments, answers);
   const isMessageVisible = evaluateVisibilityRule(visibilityRule, answers);
+  const visitorSummary = buildVisitorSummary(answers);
 
   function updateAnswer(field, value) {
     setAnswers((currentAnswers) => ({
@@ -43,6 +48,7 @@ export default function App() {
           isMessageVisible={isMessageVisible}
           message={message}
           onAnswerChange={updateAnswer}
+          visitorSummary={visitorSummary}
         />
         <InspectorPanel
           segments={initialSegments}

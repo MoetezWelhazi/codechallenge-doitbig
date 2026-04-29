@@ -3,6 +3,7 @@ export default function CanvasPreview({
   isMessageVisible,
   message,
   onAnswerChange,
+  visitorSummary,
 }) {
   return (
     <main className="preview-panel" aria-labelledby="preview-title">
@@ -40,6 +41,11 @@ export default function CanvasPreview({
           ) : (
             <p className="hidden-message">This text is hidden right now.</p>
           )}
+        </div>
+
+        <div className="summary-card">
+          <p className="message-label">Combined answer</p>
+          <p>{visitorSummary}</p>
         </div>
       </section>
     </main>

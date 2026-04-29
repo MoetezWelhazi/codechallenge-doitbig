@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { evaluateVisibilityRule, renderSmartText } from "./smartText";
+import {
+  buildVisitorSummary,
+  evaluateVisibilityRule,
+  renderSmartText,
+} from "./smartText";
 
 describe("renderSmartText", () => {
   it("renders text and field segments as one readable sentence", () => {
@@ -53,5 +57,22 @@ describe("evaluateVisibilityRule", () => {
         { name: "Sam" },
       ),
     ).toBe(true);
+  });
+});
+
+describe("buildVisitorSummary", () => {
+  it("combines the name with an age-based label", () => {
+    expect(buildVisitorSummary({ name: "Maya", age: "28" })).toBe(
+      "Maya is an adult visitor.",
+    );
+    expect(buildVisitorSummary({ name: "Leo", age: "16" })).toBe(
+      "Leo is a younger visitor.",
+    );
+  });
+
+  it("uses friendly fallback text when the name is empty", () => {
+    expect(buildVisitorSummary({ name: "", age: "20" })).toBe(
+      "This visitor is an adult visitor.",
+    );
   });
 });

@@ -40,6 +40,15 @@ export function evaluateVisibilityRule(rule, values) {
   }
 }
 
+export function buildVisitorSummary(values) {
+  const name = hasValue(values.name) ? String(values.name).trim() : "This visitor";
+  const isAdult = toNumber(values.age) >= 18;
+  const article = isAdult ? "an" : "a";
+  const ageLabel = isAdult ? "adult visitor" : "younger visitor";
+
+  return `${name} is ${article} ${ageLabel}.`;
+}
+
 function hasValue(value) {
   return value !== undefined && value !== null && String(value).trim() !== "";
 }
