@@ -1,4 +1,4 @@
-export default function InspectorPanel({ message, onMessageChange }) {
+export default function InspectorPanel({ segments }) {
   return (
     <aside className="inspector-panel" aria-labelledby="inspector-title">
       <div className="panel-heading">
@@ -6,15 +6,20 @@ export default function InspectorPanel({ message, onMessageChange }) {
         <h2 id="inspector-title">Text settings</h2>
       </div>
 
-      <label className="field">
-        Message
-        <textarea
-          value={message}
-          onChange={(event) => onMessageChange(event.target.value)}
-          placeholder="Write the text visitors should see"
-          rows={5}
-        />
-      </label>
+      <div className="field">
+        <span>Smart text</span>
+        <div className="segment-list" aria-label="Smart text recipe">
+          {segments.map((segment, index) =>
+            segment.type === "field" ? (
+              <span className="data-chip" key={`${segment.field}-${index}`}>
+                {segment.label}
+              </span>
+            ) : (
+              <span key={`${segment.value}-${index}`}>{segment.value}</span>
+            ),
+          )}
+        </div>
+      </div>
 
       <div className="helper-card">
         <h3>Next up</h3>

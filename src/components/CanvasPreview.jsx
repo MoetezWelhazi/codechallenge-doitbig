@@ -1,4 +1,4 @@
-export default function CanvasPreview({ message }) {
+export default function CanvasPreview({ answers, message, onAnswerChange }) {
   return (
     <main className="preview-panel" aria-labelledby="preview-title">
       <div className="panel-heading">
@@ -9,12 +9,23 @@ export default function CanvasPreview({ message }) {
       <section className="preview-card" aria-label="Preview app">
         <label className="field">
           Name
-          <input type="text" placeholder="Enter name" />
+          <input
+            type="text"
+            value={answers.name}
+            onChange={(event) => onAnswerChange("name", event.target.value)}
+            placeholder="Enter name"
+          />
         </label>
 
         <label className="field">
           Age
-          <input type="number" placeholder="Enter age" min="0" />
+          <input
+            type="number"
+            value={answers.age}
+            onChange={(event) => onAnswerChange("age", event.target.value)}
+            placeholder="Enter age"
+            min="0"
+          />
         </label>
 
         <div className="message-card">

@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 
 import App from './App';
@@ -16,10 +17,19 @@ describe('App', () => {
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
     expect(screen.getByRole('spinbutton', { name: /^age$/i })).toBeInTheDocument();
-    expect(
-      screen.getByText(/hello, welcome to your app/i, {
-        selector: '.message-preview',
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText(/smart text recipe/i)).toBeInTheDocument();
+    expect(screen.getByText(/hello, maya\. you are 28 years old\./i)).toBeInTheDocument();
+  });
+
+  it('updates the smart text preview when answers change', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.clear(screen.getByLabelText(/name/i));
+    await user.type(screen.getByLabelText(/name/i), 'Nora');
+    await user.clear(screen.getByRole('spinbutton', { name: /^age$/i }));
+    await user.type(screen.getByRole('spinbutton', { name: /^age$/i }), '34');
+
+    expect(screen.getByText(/hello, nora\. you are 34 years old\./i)).toBeInTheDocument();
   });
 });
