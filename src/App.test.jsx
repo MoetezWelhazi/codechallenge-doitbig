@@ -56,4 +56,16 @@ describe('App', () => {
 
     expect(screen.getByText(/this text is hidden right now/i)).toBeInTheDocument();
   });
+
+  it('exposes the editor controls with plain-language accessible names', () => {
+    render(<App />);
+
+    expect(
+      screen.getByRole('checkbox', {
+        name: /only show this text for some visitors/i,
+      }),
+    ).toBeChecked();
+    expect(screen.getByLabelText(/minimum age/i)).toHaveValue(18);
+    expect(document.body).not.toHaveTextContent(/{{|}}/);
+  });
 });
